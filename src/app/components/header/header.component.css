@@ -1,0 +1,28 @@
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    font-weight: 500;
+    margin-left: 1rem;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #0d6efd;
+}
+
+.badge {
+    font-size: 0.7rem;
+    min-width: 1.1rem;
+}
+
+@media (max-width: 991px) {
+    .nav-link {
+        margin-left: 0;
+        text-align: center;
+    }
+}
