@@ -1,47 +1,112 @@
-<div class="container d-flex align-items-center justify-content-center min-vh-100">
-    <div class="card shadow-lg border-0 rounded-4" style="max-width: 420px; width: 100%;">
-        <div class="card-body p-4 p-md-5">
-            <h3 class="text-center mb-4 fw-bold text-primary">Welcome Back</h3>
-
-            <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input id="email" type="email" class="form-control" formControlName="email" />
-                    <div *ngIf="form.controls.email.touched && form.controls.email.invalid"
-                        class="text-danger small mt-1">
-                        <div *ngIf="form.controls.email.errors?.['required']">Email is required</div>
-                        <div *ngIf="form.controls.email.errors?.['email']">Invalid email</div>
+<!-- login.component.html -->
+<div class="auth-page">
+    <div class="auth-background"></div>
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <div class="auth-card card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4 p-md-5">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <div class="auth-icon mb-3">
+                        <i class="fas fa-lock"></i>
                     </div>
+                    <h3 class="auth-title fw-bold mb-2">Welcome Back</h3>
+                    <p class="text-muted small">Sign in to continue shopping</p>
                 </div>
 
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input id="password" type="password" class="form-control" formControlName="password" />
-                    <div *ngIf="form.controls.password.touched && form.controls.password.invalid"
-                        class="text-danger small mt-1">
-                        <div *ngIf="form.controls.password.errors?.['required']">Password is required</div>
-                        <div *ngIf="form.controls.password.errors?.['minlength']">
-                            Password must be at least 6 characters
+                <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">
+                            <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-user text-muted"></i>
+                            </span>
+                            <input id="email" type="email" class="form-control border-start-0 ps-0"
+                                formControlName="email" placeholder="your@email.com"
+                                [class.is-invalid]="form.controls.email.touched && form.controls.email.invalid" />
+                        </div>
+                        <div *ngIf="form.controls.email.touched && form.controls.email.invalid"
+                            class="invalid-feedback d-block">
+                            <div *ngIf="form.controls.email.errors?.['required']">
+                                <i class="fas fa-exclamation-circle me-1"></i>Email is required
+                            </div>
+                            <div *ngIf="form.controls.email.errors?.['email']">
+                                <i class="fas fa-exclamation-circle me-1"></i>Please enter a valid email
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-semibold">
+                            <i class="fas fa-key me-2 text-primary"></i>Password
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-lock text-muted"></i>
+                            </span>
+                            <input id="password" [type]="showPassword ? 'text' : 'password'"
+                                class="form-control border-start-0 border-end-0 ps-0" formControlName="password"
+                                placeholder="Enter your password"
+                                [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid" />
+                            <span class="input-group-text bg-light border-start-0 cursor-pointer"
+                                (click)="togglePassword()">
+                                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-muted"></i>
+                            </span>
+                        </div>
+                        <div *ngIf="form.controls.password.touched && form.controls.password.invalid"
+                            class="invalid-feedback d-block">
+                            <div *ngIf="form.controls.password.errors?.['required']">
+                                <i class="fas fa-exclamation-circle me-1"></i>Password is required
+                            </div>
+                            <div *ngIf="form.controls.password.errors?.['minlength']">
+                                <i class="fas fa-exclamation-circle me-1"></i>Password must be at least 6 characters
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label small text-muted" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="text-primary text-decoration-none small fw-semibold">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                        <button type="button" class="btn-close" (click)="error = null"></button>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-login w-100 py-3 fw-semibold mb-3"
+                        [disabled]="loading">
+                        <span *ngIf="!loading">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </span>
+                        <span *ngIf="loading">
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            Signing in...
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Register Link -->
+                <div class="text-center mt-4 pt-3 border-top">
+                    <span class="text-muted">Don't have an account?</span>
+                    <a routerLink="/register" class="text-primary fw-semibold text-decoration-none ms-1 register-link">
+                        Create Account
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
-
-                <!-- Error -->
-                <div *ngIf="error" class="alert alert-danger py-2">{{ error }}</div>
-
-                <!-- Submit -->
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" [disabled]="loading">
-                    <span *ngIf="!loading">Login</span>
-                    <span *ngIf="loading">Signing in...</span>
-                </button>
-            </form>
-
-            <!-- Register link -->
-            <div class="text-center mt-4">
-                <span class="text-muted">Don’t have an account?</span>
-                <a routerLink="/register" class="text-primary fw-semibold text-decoration-none">Register</a>
             </div>
         </div>
     </div>

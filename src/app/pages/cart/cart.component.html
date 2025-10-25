@@ -1,1 +1,152 @@
-<p>cart works!</p>
+<div class="cart-page">
+    <div class="container py-5">
+        <!-- Page Header -->
+        <div class="page-header mb-5">
+            <h1 class="page-title">
+                <i class="fas fa-shopping-cart me-3"></i>
+                Shopping Cart
+            </h1>
+            <p class="page-subtitle text-muted">Review your items before checkout</p>
+        </div>
+
+        <!-- Empty Cart -->
+        <div *ngIf="cartItems.length === 0" class="empty-cart text-center py-5">
+            <i class="fas fa-shopping-cart empty-icon mb-4"></i>
+            <h3 class="mb-3">Your cart is empty</h3>
+            <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+            <a routerLink="/home" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-bag me-2"></i>
+                Start Shopping
+            </a>
+        </div>
+
+        <!-- Cart Items -->
+        <div *ngIf="cartItems.length > 0" class="row g-4">
+            <!-- Cart Items List -->
+            <div class="col-lg-8">
+                <div class="cart-items-container">
+                    <!-- Cart Header -->
+                    <div class="cart-header d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Cart Items ({{ cartItems.length }})
+                        </h5>
+                        <button class="btn btn-outline-danger btn-sm" (click)="clearCart()">
+                            <i class="fas fa-trash me-2"></i>
+                            Clear Cart
+                        </button>
+                    </div>
+
+                    <!-- Cart Items -->
+                    <div class="cart-item" *ngFor="let item of cartItems">
+                        <div class="row g-3 align-items-center">
+                            <!-- Product Image -->
+                            <div class="col-md-3">
+                                <div class="item-image-wrapper">
+                                    <img [src]="item.image" [alt]="item.name" class="item-image">
+                                </div>
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="col-md-5">
+                                <div class="item-details">
+                                    <span class="item-category">{{ item.category }}</span>
+                                    <h5 class="item-name">{{ item.name }}</h5>
+                                    <p class="item-description">{{ item.description }}</p>
+                                    <div class="item-price-mobile d-md-none">
+                                        <span class="price">${{ item.price }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quantity Controls -->
+                            <div class="col-md-2">
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" (click)="decreaseQuantity(item.id)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-value">{{ item.quantity }}</span>
+                                    <button class="quantity-btn" (click)="increaseQuantity(item.id)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Price & Remove -->
+                            <div class="col-md-2">
+                                <div class="item-actions text-end">
+                                    <div class="item-total mb-2">
+                                        ${{ getItemTotal(item).toFixed(2) }}
+                                    </div>
+                                    <button class="btn btn-remove btn-sm" (click)="removeItem(item.id)">
+                                        <i class="fas fa-trash-alt me-1"></i>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="order-summary">
+                    <h5 class="summary-title mb-4">
+                        <i class="fas fa-receipt me-2"></i>
+                        Order Summary
+                    </h5>
+
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>${{ cartTotal.toFixed(2) }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (10%)</span>
+                            <span>${{ (cartTotal * 0.1).toFixed(2) }}</span>
+                        </div>
+                        <hr class="my-3">
+                        <div class="summary-row summary-total">
+                            <span>Total</span>
+                            <span>${{ (cartTotal * 1.1).toFixed(2) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="promo-code mt-4 mb-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Promo code">
+                            <button class="btn btn-outline-primary">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-checkout w-100 mb-3" routerLink="/checkout">
+                        <i class="fas fa-lock me-2"></i>
+                        Proceed to Checkout
+                    </button>
+
+                    <a routerLink="/home" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Continue Shopping
+                    </a>
+
+                    <div class="payment-icons mt-4 text-center">
+                        <small class="text-muted d-block mb-2">We Accept</small>
+                        <div class="d-flex justify-content-center gap-2">
+                            <i class="fab fa-cc-visa payment-icon"></i>
+                            <i class="fab fa-cc-mastercard payment-icon"></i>
+                            <i class="fab fa-cc-paypal payment-icon"></i>
+                            <i class="fab fa-cc-amex payment-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

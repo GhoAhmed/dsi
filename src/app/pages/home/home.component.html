@@ -1,1 +1,205 @@
-<div>home</div>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="hero-content">
+                    <h1 class="hero-title mb-4">
+                        Welcome to <span class="brand-gradient">ShopSmart</span>
+                    </h1>
+                    <p class="hero-subtitle mb-4">
+                        Discover amazing products at unbeatable prices. Your one-stop shop for all your needs.
+                    </p>
+                    <div class="hero-buttons">
+                        <a routerLink="/products" class="btn btn-primary btn-lg me-3 btn-hero">
+                            <i class="fas fa-shopping-bag me-2"></i>
+                            Shop Now
+                        </a>
+                        <a routerLink="/about" class="btn btn-outline-primary btn-lg btn-hero">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&h=600&fit=crop"
+                        alt="Shopping" class="img-fluid rounded-4 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h5 class="fw-bold">Fast Delivery</h5>
+                    <p class="text-muted small">Free shipping on orders over $50</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5 class="fw-bold">Secure Payment</h5>
+                    <p class="text-muted small">100% secure transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h5 class="fw-bold">Easy Returns</h5>
+                    <p class="text-muted small">30-day money-back guarantee</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5 class="fw-bold">24/7 Support</h5>
+                    <p class="text-muted small">Always here to help</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Featured Products</h2>
+            <p class="section-subtitle text-muted">Check out our handpicked selection</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" *ngFor="let product of featuredProducts">
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img [src]="product.image" [alt]="product.name" class="product-image">
+                        <div class="product-badge" *ngIf="product.stock < 20">
+                            <i class="fas fa-fire me-1"></i>Hot
+                        </div>
+                        <div class="product-overlay">
+                            <button class="btn btn-light btn-sm me-2" title="Quick View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-light btn-sm" title="Add to Wishlist">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">{{ product.category }}</div>
+                        <h5 class="product-name">{{ product.name }}</h5>
+                        <p class="product-description">{{ product.description }}</p>
+                        <div class="product-rating mb-2">
+                            <span *ngFor="let star of getStarArray(product.rating)" class="star">
+                                <i class="fas fa-star" [class.filled]="star"></i>
+                            </span>
+                            <span class="rating-text">({{ product.rating }})</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="product-price">${{ product.price }}</div>
+                            <button class="btn btn-primary btn-sm btn-add-cart" (click)="addToCart(product)">
+                                <i class="fas fa-cart-plus me-1"></i>Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Filter & All Products -->
+<section class="products-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Browse All Products</h2>
+            <p class="section-subtitle text-muted">Find exactly what you're looking for</p>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-filter mb-4">
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <button class="btn category-btn" [class.active]="selectedCategory === 'All'"
+                    (click)="filterByCategory('All')">
+                    <i class="fas fa-th me-2"></i>All Products
+                </button>
+                <button class="btn category-btn" *ngFor="let category of categories"
+                    [class.active]="selectedCategory === category" (click)="filterByCategory(category)">
+                    {{ category }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" *ngFor="let product of getFilteredProducts()">
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img [src]="product.image" [alt]="product.name" class="product-image">
+                        <div class="product-badge" *ngIf="product.stock < 20">
+                            <i class="fas fa-fire me-1"></i>Hot
+                        </div>
+                        <div class="product-overlay">
+                            <button class="btn btn-light btn-sm me-2" title="Quick View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-light btn-sm" title="Add to Wishlist">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">{{ product.category }}</div>
+                        <h5 class="product-name">{{ product.name }}</h5>
+                        <p class="product-description">{{ product.description }}</p>
+                        <div class="product-rating mb-2">
+                            <span *ngFor="let star of getStarArray(product.rating)" class="star">
+                                <i class="fas fa-star" [class.filled]="star"></i>
+                            </span>
+                            <span class="rating-text">({{ product.rating }})</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="product-price">${{ product.price }}</div>
+                            <button class="btn btn-primary btn-sm btn-add-cart" (click)="addToCart(product)">
+                                <i class="fas fa-cart-plus me-1"></i>Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="cta-card text-center">
+            <i class="fas fa-tag cta-icon mb-4"></i>
+            <h2 class="mb-3">Get Special Offers & Discounts</h2>
+            <p class="mb-4">Subscribe to our newsletter and never miss a deal!</p>
+            <div class="newsletter-form">
+                <input type="email" class="form-control" placeholder="Enter your email">
+                <button class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Subscribe
+                </button>
+            </div>
+        </div>
+    </div>
+</section>

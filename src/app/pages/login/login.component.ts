@@ -13,8 +13,9 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class LoginComponent {
   form;
-  error = '';
+  error: string | null = null;
   loading = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -25,6 +26,10 @@ export class LoginComponent {
       email: ['user@gmail.com', [Validators.required, Validators.email]],
       password: ['123456', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   async submit() {
