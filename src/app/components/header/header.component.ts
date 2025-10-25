@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -11,51 +12,38 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  brand: string = 'ShopSmart';
+  brand = 'ShopSmart';
   cartCount = 0;
-
-  isLoggedIn$: Observable<boolean>;
+  isLoggedIn$!: Observable<boolean>; // initialize later
   userEmail: string | null = null;
 
-  private cartUpdateListener: any;
+  private subscription = new Subscription();
+  isNavbarCollapsed = true;
 
-  constructor(private auth: AuthService) {
+  constructor(private cartService: CartService, private auth: AuthService) {
+    // Initialize isLoggedIn$ here, after auth is available
     this.isLoggedIn$ = this.auth.isLoggedIn$;
-    // keep user email updated from localStorage (simple approach)
-    this.userEmail = this.auth.getUser()?.email ?? null;
-    // subscribe to update email on state change
-    this.isLoggedIn$.subscribe((logged) => {
-      this.userEmail = logged ? this.auth.getUser()?.email ?? null : null;
-    });
   }
 
   ngOnInit() {
-    // Initialize cart count
-    this.updateCartCount();
+    // Subscribe to cart count updates
+    this.subscription.add(
+      this.cartService.cartCount$.subscribe((count) => {
+        this.cartCount = count;
+      })
+    );
 
-    // Listen for cart updates
-    this.cartUpdateListener = () => {
-      this.updateCartCount();
-    };
-    window.addEventListener('cart-updated', this.cartUpdateListener);
-  }
-
-  ngOnDestroy() {
-    // Clean up event listener
-    if (this.cartUpdateListener) {
-      window.removeEventListener('cart-updated', this.cartUpdateListener);
-    }
-  }
-
-  updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    this.cartCount = cart.reduce(
-      (total: number, item: any) => total + item.quantity,
-      0
+    // Subscribe to auth changes
+    this.subscription.add(
+      this.isLoggedIn$.subscribe((logged) => {
+        this.userEmail = logged ? this.auth.getUser()?.email ?? null : null;
+      })
     );
   }
 
-  isNavbarCollapsed = true;
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   toggleNavbar() {
     this.isNavbarCollapsed = !this.isNavbarCollapsed;

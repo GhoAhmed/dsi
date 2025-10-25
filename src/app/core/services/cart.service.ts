@@ -9,31 +9,34 @@ export class CartService {
   private cartSubject = new BehaviorSubject<CartItem[]>(
     this.getCartFromStorage()
   );
-  public cart$: Observable<CartItem[]> = this.cartSubject.asObservable();
+  public cart$ = this.cartSubject.asObservable();
 
   private cartCountSubject = new BehaviorSubject<number>(
     this.calculateCartCount()
   );
-  public cartCount$: Observable<number> = this.cartCountSubject.asObservable();
+  public cartCount$ = this.cartCountSubject.asObservable();
 
   constructor() {}
 
   private getCartFromStorage(): CartItem[] {
-    const cart = localStorage.getItem('cart');
-    return cart ? JSON.parse(cart) : [];
+    try {
+      const cart = localStorage.getItem('cart');
+      return cart ? JSON.parse(cart) : [];
+    } catch (error) {
+      console.error('Error reading cart from storage:', error);
+      return [];
+    }
   }
 
-  private saveCartToStorage(cart: CartItem[]): void {
+  private saveCart(cart: CartItem[]) {
     localStorage.setItem('cart', JSON.stringify(cart));
-    this.cartSubject.next(cart);
-    this.cartCountSubject.next(this.calculateCartCount());
-
-    // Dispatch event for components not using the service
-    window.dispatchEvent(new CustomEvent('cart-updated'));
+    this.cartSubject.next(cart); // immediately notify subscribers
+    this.cartCountSubject.next(this.calculateCartCount(cart));
   }
 
-  private calculateCartCount(): number {
-    const cart = this.getCartFromStorage();
+  private calculateCartCount(
+    cart: CartItem[] = this.getCartFromStorage()
+  ): number {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }
 
@@ -46,44 +49,42 @@ export class CartService {
   }
 
   addToCart(product: any): void {
-    const cart = this.getCartFromStorage();
-    const existingProduct = cart.find((item) => item.id === product.id);
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
+    const cart = [...this.cartSubject.value];
+    const existing = cart.find((item) => item.id === product.id);
+    if (existing) {
+      existing.quantity += 1;
     } else {
       cart.push({ ...product, quantity: 1 });
     }
-
-    this.saveCartToStorage(cart);
+    this.saveCart(cart);
   }
 
   updateQuantity(productId: number, quantity: number): void {
-    const cart = this.getCartFromStorage();
+    const cart = [...this.cartSubject.value];
     const product = cart.find((item) => item.id === productId);
-
     if (product) {
       if (quantity <= 0) {
         this.removeFromCart(productId);
       } else {
         product.quantity = quantity;
-        this.saveCartToStorage(cart);
+        this.saveCart(cart);
       }
     }
   }
 
   removeFromCart(productId: number): void {
-    let cart = this.getCartFromStorage();
-    cart = cart.filter((item) => item.id !== productId);
-    this.saveCartToStorage(cart);
+    const cart = this.cartSubject.value.filter((item) => item.id !== productId);
+    this.saveCart(cart);
   }
 
   clearCart(): void {
-    this.saveCartToStorage([]);
+    this.saveCart([]);
   }
 
   getCartTotal(): number {
-    const cart = this.getCartFromStorage();
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    return this.cartSubject.value.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   }
 }

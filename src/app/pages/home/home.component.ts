@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,8 @@ export class HomeComponent implements OnInit {
   featuredProducts: Product[] = [];
   categories = ['Electronics', 'Fashion', 'Home & Living', 'Sports'];
   selectedCategory = 'All';
+
+  constructor(private cartService: CartService) {}
 
   ngOnInit() {
     this.loadProducts();
@@ -119,10 +122,9 @@ export class HomeComponent implements OnInit {
   }
 
   getFilteredProducts(): Product[] {
-    if (this.selectedCategory === 'All') {
-      return this.products;
-    }
-    return this.products.filter((p) => p.category === this.selectedCategory);
+    return this.selectedCategory === 'All'
+      ? this.products
+      : this.products.filter((p) => p.category === this.selectedCategory);
   }
 
   filterByCategory(category: string) {
@@ -130,41 +132,17 @@ export class HomeComponent implements OnInit {
   }
 
   addToCart(product: Product) {
-    // Get existing cart from localStorage
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-    // Check if product already exists in cart
-    const existingProduct = cart.find((item: any) => item.id === product.id);
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({ ...product, quantity: 1 });
-    }
-
-    // Save back to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
-
-    // Dispatch custom event to update cart count
-    window.dispatchEvent(new CustomEvent('cart-updated'));
-
-    // Show success message
+    this.cartService.addToCart(product); // ✅ Use service, not localStorage
     this.showNotification(`${product.name} added to cart!`);
   }
 
   showNotification(message: string) {
     const notification = document.createElement('div');
     notification.className = 'cart-notification';
-    notification.innerHTML = `
-      <i class="fas fa-check-circle me-2"></i>
-      ${message}
-    `;
+    notification.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
     document.body.appendChild(notification);
 
-    setTimeout(() => {
-      notification.classList.add('show');
-    }, 10);
-
+    setTimeout(() => notification.classList.add('show'), 10);
     setTimeout(() => {
       notification.classList.remove('show');
       setTimeout(() => notification.remove(), 300);
@@ -172,10 +150,6 @@ export class HomeComponent implements OnInit {
   }
 
   getStarArray(rating: number): boolean[] {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(i <= Math.floor(rating));
-    }
-    return stars;
+    return Array.from({ length: 5 }, (_, i) => i < Math.floor(rating));
   }
 }

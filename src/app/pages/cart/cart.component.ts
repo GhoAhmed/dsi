@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CartItem } from '../../core/interfaces/cart-item';
 import { CartService } from '../../core/services/cart.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import Swal from 'sweetalert2';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
@@ -10,9 +12,10 @@ import { RouterLink } from '@angular/router';
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnDestroy {
   cartItems: CartItem[] = [];
   cartTotal = 0;
+  private destroy$ = new Subject<void>();
 
   constructor(private cartService: CartService) {}
 
@@ -20,8 +23,14 @@ export class CartComponent implements OnInit {
     this.loadCart();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadCart() {
-    this.cartService.cart$.subscribe((items) => {
+    // Subscribe to cart changes and unsubscribe on destroy
+    this.cartService.cart$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
       this.cartItems = items;
       this.cartTotal = this.cartService.getCartTotal();
     });
@@ -53,10 +62,26 @@ export class CartComponent implements OnInit {
   }
 
   clearCart() {
-    if (confirm('Are you sure you want to clear your cart?')) {
-      this.cartService.clearCart();
-      this.showNotification('Cart cleared');
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This will remove all items from your cart!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0d6efd',
+      cancelButtonColor: '#dc3545',
+      confirmButtonText: 'Yes, clear it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cartService.clearCart();
+        Swal.fire({
+          title: 'Cleared!',
+          text: 'Your cart has been emptied.',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    });
   }
 
   getItemTotal(item: CartItem): number {
