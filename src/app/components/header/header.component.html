@@ -1,40 +1,90 @@
+<!-- Enhanced Navbar Component -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
     <div class="container">
-        <!-- Logo / Brand -->
-        <a class="navbar-brand fw-bold text-primary" routerLink="/">
-            <i class="bi bi-bag-check-fill me-2"></i>
-            ShopSmart
+        <!-- Brand with Gradient -->
+        <a class="navbar-brand fw-bold d-flex align-items-center brand-logo" routerLink="/">
+            <i class="fas fa-shopping-bag me-2 fs-4 brand-icon"></i>
+            <span class="brand-text">{{ brand }}</span>
         </a>
 
-        <!-- Toggler (mobile) -->
-        <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+        <!-- Toggler (Mobile) -->
+        <button class="navbar-toggler border-0" type="button" (click)="toggleNavbar()" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Navbar links -->
-        <div class="collapse navbar-collapse" [class.show]="!isNavbarCollapsed">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <!-- Links -->
+        <div class="collapse navbar-collapse" [class.show]="!isNavbarCollapsed" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item">
-                    <a routerLink="/" routerLinkActive="active" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a routerLink="/products" routerLinkActive="active" class="nav-link">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a routerLink="/cart" routerLinkActive="active" class="nav-link position-relative">
-                        Cart
-                        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
-                            *ngIf="cartCount > 0">
-                            {{ cartCount }}
-                        </span>
+                    <a routerLink="/" routerLinkActive="active" class="nav-link px-3 nav-link-custom">
+                        <i class="fas fa-home me-2"></i>
+                        <span>Home</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a routerLink="/login" routerLinkActive="active" class="nav-link">Login</a>
+                    <a routerLink="/products" routerLinkActive="active" class="nav-link px-3 nav-link-custom">
+                        <i class="fas fa-th-large me-2"></i>
+                        <span>Products</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a routerLink="/register" routerLinkActive="active" class="nav-link">Register</a>
+                    <a routerLink="/cart" routerLinkActive="active"
+                        class="nav-link px-3 position-relative nav-link-custom cart-link">
+                        <i class="fas fa-shopping-cart fs-5"></i>
+                        <span class="badge bg-gradient-danger rounded-pill cart-badge" *ngIf="cartCount > 0">{{
+                            cartCount }}</span>
+                    </a>
                 </li>
+
+                <!-- Logged out -->
+                <ng-container *ngIf="!(isLoggedIn$ | async)">
+                    <li class="nav-item ms-lg-2">
+                        <a routerLink="/login" routerLinkActive="active" class="nav-link px-3 nav-link-custom">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                </ng-container>
+
+                <!-- Logged in -->
+                <ng-container *ngIf="isLoggedIn$ | async">
+                    <li class="nav-item dropdown ms-lg-2">
+                        <button
+                            class="nav-link dropdown-toggle d-flex align-items-center btn btn-link text-decoration-none user-dropdown-btn"
+                            id="userDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar me-2">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-email">{{ userEmail }}</span>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 dropdown-custom"
+                            aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item dropdown-item-custom" routerLink="/profile">
+                                    <i class="fas fa-user me-3 text-primary"></i>
+                                    <span>Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item dropdown-item-custom" routerLink="/orders">
+                                    <i class="fas fa-box me-3 text-success"></i>
+                                    <span>My Orders</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider my-2" />
+                            </li>
+                            <li>
+                                <button class="dropdown-item dropdown-item-custom text-danger" (click)="logout()">
+                                    <i class="fas fa-sign-out-alt me-3"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </li>
+                </ng-container>
             </ul>
         </div>
     </div>

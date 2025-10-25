@@ -1,1 +1,48 @@
-<p>login works!</p>
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card shadow-lg border-0 rounded-4" style="max-width: 420px; width: 100%;">
+        <div class="card-body p-4 p-md-5">
+            <h3 class="text-center mb-4 fw-bold text-primary">Welcome Back</h3>
+
+            <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input id="email" type="email" class="form-control" formControlName="email" />
+                    <div *ngIf="form.controls.email.touched && form.controls.email.invalid"
+                        class="text-danger small mt-1">
+                        <div *ngIf="form.controls.email.errors?.['required']">Email is required</div>
+                        <div *ngIf="form.controls.email.errors?.['email']">Invalid email</div>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" type="password" class="form-control" formControlName="password" />
+                    <div *ngIf="form.controls.password.touched && form.controls.password.invalid"
+                        class="text-danger small mt-1">
+                        <div *ngIf="form.controls.password.errors?.['required']">Password is required</div>
+                        <div *ngIf="form.controls.password.errors?.['minlength']">
+                            Password must be at least 6 characters
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error -->
+                <div *ngIf="error" class="alert alert-danger py-2">{{ error }}</div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" [disabled]="loading">
+                    <span *ngIf="!loading">Login</span>
+                    <span *ngIf="loading">Signing in...</span>
+                </button>
+            </form>
+
+            <!-- Register link -->
+            <div class="text-center mt-4">
+                <span class="text-muted">Don’t have an account?</span>
+                <a routerLink="/register" class="text-primary fw-semibold text-decoration-none">Register</a>
+            </div>
+        </div>
+    </div>
+</div>

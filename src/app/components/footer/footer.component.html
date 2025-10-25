@@ -1,41 +1,132 @@
-<footer class="bg-dark text-light pt-5 pb-3 mt-5">
+<!-- Enhanced Footer Component -->
+<footer class="footer-custom bg-dark text-light pt-5 pb-3 mt-5">
     <div class="container">
         <div class="row gy-4">
-            <!-- Column 1 -->
-            <div class="col-md-4">
-                <h5 class="fw-bold mb-3 text-primary">ShopSmart</h5>
-                <p class="text-muted small">
-                    Your trusted online store for quality products, fast delivery, and unbeatable prices.
+            <!-- Column 1 - Brand Info -->
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-brand mb-3">
+                    <i class="fas fa-shopping-bag me-2 fs-3 brand-icon"></i>
+                    <h5 class="d-inline fw-bold brand-text">ShopSmart</h5>
+                </div>
+                <p class="text-muted small mb-4">
+                    Your trusted online store for quality products, fast delivery, and unbeatable prices. Shop with
+                    confidence!
                 </p>
+                <div class="social-links">
+                    <a href="#" class="social-icon" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
             </div>
 
-            <!-- Column 2 -->
-            <div class="col-md-4">
-                <h6 class="fw-bold mb-3">Quick Links</h6>
-                <ul class="list-unstyled small">
-                    <li><a routerLink="/" class="text-light text-decoration-none">Home</a></li>
-                    <li><a routerLink="/products" class="text-light text-decoration-none">Products</a></li>
-                    <li><a routerLink="/cart" class="text-light text-decoration-none">Cart</a></li>
-                    <li><a routerLink="/checkout" class="text-light text-decoration-none">Checkout</a></li>
+            <!-- Column 2 - Quick Links -->
+            <div class="col-lg-2 col-md-6">
+                <h6 class="fw-bold mb-3 footer-heading">
+                    <i class="fas fa-link me-2"></i>Quick Links
+                </h6>
+                <ul class="list-unstyled footer-links">
+                    <li>
+                        <a routerLink="/" class="footer-link">
+                            <i class="fas fa-angle-right me-2"></i>Home
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/products" class="footer-link">
+                            <i class="fas fa-angle-right me-2"></i>Products
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/cart" class="footer-link">
+                            <i class="fas fa-angle-right me-2"></i>Cart
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/checkout" class="footer-link">
+                            <i class="fas fa-angle-right me-2"></i>Checkout
+                        </a>
+                    </li>
                 </ul>
             </div>
 
-            <!-- Column 3 -->
-            <div class="col-md-4">
-                <h6 class="fw-bold mb-3">Follow Us</h6>
-                <ul class="list-unstyled small">
-                    <li><a routerLink="/" class="text-light text-decoration-none">New</a></li>
-                    <li><a routerLink="/products" class="text-light text-decoration-none">Report</a></li>
-                    <li><a routerLink="/cart" class="text-light text-decoration-none">FAQ</a></li>
-                    <li><a routerLink="/checkout" class="text-light text-decoration-none">Privacy</a></li>
+            <!-- Column 3 - Support -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="fw-bold mb-3 footer-heading">
+                    <i class="fas fa-headset me-2"></i>Support
+                </h6>
+                <ul class="list-unstyled footer-links">
+                    <li>
+                        <a routerLink="/news" class="footer-link">
+                            <i class="fas fa-newspaper me-2"></i>News & Updates
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/report" class="footer-link">
+                            <i class="fas fa-flag me-2"></i>Report Issue
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/faq" class="footer-link">
+                            <i class="fas fa-question-circle me-2"></i>FAQ
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/privacy" class="footer-link">
+                            <i class="fas fa-shield-alt me-2"></i>Privacy Policy
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 4 - Contact Info -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="fw-bold mb-3 footer-heading">
+                    <i class="fas fa-envelope me-2"></i>Contact Us
+                </h6>
+                <ul class="list-unstyled footer-contact">
+                    <li class="mb-3">
+                        <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                        <span class="small">123 Commerce St, City, Country</span>
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-phone me-2 text-success"></i>
+                        <a href="tel:+1234567890" class="footer-link">+1 (234) 567-890</a>
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-envelope me-2 text-info"></i>
+                        <a href="mailto:info@shopsmart.com" class="footer-link">infoshopsmart.com</a>
+                    </li>
                 </ul>
             </div>
         </div>
 
+        <!-- Divider -->
         <hr class="border-secondary my-4" />
 
-        <div class="text-center small text-secondary">
-            © ShopSmart. All rights reserved.
+        <!-- Footer Bottom -->
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="small text-secondary mb-0">
+                    <i class="fas fa-copyright me-1"></i>
+                    {{ currentYear }} ShopSmart. All rights reserved.
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa payment-icon" title="Visa"></i>
+                    <i class="fab fa-cc-mastercard payment-icon" title="Mastercard"></i>
+                    <i class="fab fa-cc-paypal payment-icon" title="PayPal"></i>
+                    <i class="fab fa-cc-amex payment-icon" title="American Express"></i>
+                </div>
+            </div>
         </div>
     </div>
 </footer>
