@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
+import { CATEGORIES, PRODUCTS } from '../../core/constants';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
   products: Product[] = [];
   featuredProducts: Product[] = [];
-  categories = ['Electronics', 'Fashion', 'Home & Living', 'Sports'];
+  categories = CATEGORIES;
   selectedCategory = 'All';
 
   constructor(private cartService: CartService) {}
@@ -23,98 +26,7 @@ export class HomeComponent implements OnInit {
   }
 
   loadProducts() {
-    this.products = [
-      {
-        id: 1,
-        name: 'Wireless Headphones',
-        description:
-          'Premium noise-cancelling headphones with superior sound quality',
-        price: 129.99,
-        image:
-          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop',
-        category: 'Electronics',
-        rating: 4.5,
-        stock: 25,
-      },
-      {
-        id: 2,
-        name: 'Smart Watch',
-        description:
-          'Track your fitness and stay connected with this elegant smartwatch',
-        price: 299.99,
-        image:
-          'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop',
-        category: 'Electronics',
-        rating: 4.8,
-        stock: 15,
-      },
-      {
-        id: 3,
-        name: 'Leather Backpack',
-        description: 'Stylish and durable backpack perfect for work or travel',
-        price: 89.99,
-        image:
-          'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop',
-        category: 'Fashion',
-        rating: 4.3,
-        stock: 30,
-      },
-      {
-        id: 4,
-        name: 'Running Shoes',
-        description: 'Lightweight and comfortable shoes for your daily runs',
-        price: 119.99,
-        image:
-          'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
-        category: 'Sports',
-        rating: 4.7,
-        stock: 40,
-      },
-      {
-        id: 5,
-        name: 'Coffee Maker',
-        description: 'Brew the perfect cup of coffee every morning',
-        price: 79.99,
-        image:
-          'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=500&h=500&fit=crop',
-        category: 'Home & Living',
-        rating: 4.4,
-        stock: 20,
-      },
-      {
-        id: 6,
-        name: 'Sunglasses',
-        description: 'UV protection with classic style',
-        price: 149.99,
-        image:
-          'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=500&fit=crop',
-        category: 'Fashion',
-        rating: 4.6,
-        stock: 35,
-      },
-      {
-        id: 7,
-        name: 'Yoga Mat',
-        description: 'Non-slip yoga mat for your daily practice',
-        price: 39.99,
-        image:
-          'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500&h=500&fit=crop',
-        category: 'Sports',
-        rating: 4.5,
-        stock: 50,
-      },
-      {
-        id: 8,
-        name: 'Desk Lamp',
-        description: 'Modern LED desk lamp with adjustable brightness',
-        price: 49.99,
-        image:
-          'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&h=500&fit=crop',
-        category: 'Home & Living',
-        rating: 4.2,
-        stock: 18,
-      },
-    ];
+    this.products = PRODUCTS;
   }
 
   loadFeaturedProducts() {
@@ -131,25 +43,220 @@ export class HomeComponent implements OnInit {
     this.selectedCategory = category;
   }
 
-  addToCart(product: Product) {
-    this.cartService.addToCart(product); // ✅ Use service, not localStorage
+  /**
+   * Enhanced add to cart with flying animation
+   */
+  addToCart(product: Product, event?: MouseEvent) {
+    // Add to cart service
+    this.cartService.addToCart(product);
+
+    // Get the clicked button element
+    const button = event?.currentTarget as HTMLElement;
+    const productCard = button?.closest('.product-card') as HTMLElement;
+    const productImage = productCard?.querySelector(
+      '.product-image'
+    ) as HTMLImageElement;
+
+    if (button && productCard && productImage) {
+      // Trigger animations
+      this.triggerButtonAnimation(button);
+      this.triggerCardAnimation(productCard);
+      this.triggerImageAnimation(productImage);
+      this.createFlyingImage(productImage, event!);
+      this.createSuccessParticles(event!);
+      this.animateCartIcon();
+    }
+
+    // Show notification
     this.showNotification(`${product.name} added to cart!`);
   }
 
+  /**
+   * Trigger button pulse animation
+   */
+  private triggerButtonAnimation(button: HTMLElement): void {
+    button.classList.add('adding');
+
+    // Add success checkmark temporarily
+    const checkmark = document.createElement('i');
+    checkmark.className = 'fas fa-check success-icon';
+    button.appendChild(checkmark);
+
+    setTimeout(() => {
+      button.classList.remove('adding');
+      checkmark.remove();
+    }, 600);
+  }
+
+  /**
+   * Trigger product card success animation
+   */
+  private triggerCardAnimation(card: HTMLElement): void {
+    card.classList.add('item-added');
+    setTimeout(() => {
+      card.classList.remove('item-added');
+    }, 600);
+  }
+
+  /**
+   * Trigger product image pulse animation
+   */
+  private triggerImageAnimation(image: HTMLImageElement): void {
+    image.classList.add('adding');
+    setTimeout(() => {
+      image.classList.remove('adding');
+    }, 500);
+  }
+
+  /**
+   * Create flying product image animation to cart
+   */
+  private createFlyingImage(
+    sourceImage: HTMLImageElement,
+    event: MouseEvent
+  ): void {
+    // Get cart icon position (adjust selector to match your navbar cart icon)
+    const cartIcon =
+      document.querySelector('.navbar .fa-shopping-cart') ||
+      document.querySelector('[routerLink="/cart"]') ||
+      document.querySelector('.cart-icon');
+
+    if (!cartIcon) return;
+
+    const cartRect = cartIcon.getBoundingClientRect();
+    const sourceRect = sourceImage.getBoundingClientRect();
+
+    // Create flying image element
+    const flyingImg = document.createElement('img');
+    flyingImg.src = sourceImage.src;
+    flyingImg.className = 'flying-image';
+
+    // Set initial position and size
+    flyingImg.style.width = `${sourceRect.width}px`;
+    flyingImg.style.height = `${sourceRect.height}px`;
+    flyingImg.style.left = `${sourceRect.left}px`;
+    flyingImg.style.top = `${sourceRect.top}px`;
+
+    // Calculate translation distances
+    const deltaX = cartRect.left - sourceRect.left + cartRect.width / 2;
+    const deltaY = cartRect.top - sourceRect.top + cartRect.height / 2;
+
+    // Set CSS custom properties for animation
+    flyingImg.style.setProperty('--tx', `${deltaX}px`);
+    flyingImg.style.setProperty('--ty', `${deltaY}px`);
+
+    // Add to document
+    document.body.appendChild(flyingImg);
+
+    // Remove after animation completes
+    setTimeout(() => {
+      flyingImg.remove();
+    }, 900);
+  }
+
+  /**
+   * Create success particles effect
+   */
+  private createSuccessParticles(event: MouseEvent): void {
+    const colors = ['#667eea', '#764ba2', '#10b981', '#fbbf24', '#f093fb'];
+    const icons = [
+      'fas fa-star',
+      'fas fa-heart',
+      'fas fa-check',
+      'fas fa-sparkles',
+    ];
+    const particleCount = 8;
+
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('i');
+      const iconClass = icons[Math.floor(Math.random() * icons.length)];
+      particle.className = `${iconClass} success-particle`;
+      particle.style.color = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.fontSize = `${15 + Math.random() * 15}px`;
+      particle.style.left = `${event.clientX}px`;
+      particle.style.top = `${event.clientY}px`;
+
+      // Random direction for each particle
+      const angle = (Math.PI * 2 * i) / particleCount;
+      const distance = 50 + Math.random() * 50;
+      const px = Math.cos(angle) * distance;
+      const py = Math.sin(angle) * distance;
+
+      particle.style.setProperty('--px', `${px}px`);
+      particle.style.setProperty('--py', `${py}px`);
+
+      document.body.appendChild(particle);
+
+      // Remove after animation
+      setTimeout(() => {
+        particle.remove();
+      }, 1000);
+    }
+  }
+
+  /**
+   * Animate cart icon in navbar
+   */
+  private animateCartIcon(): void {
+    const cartIcon =
+      document.querySelector('.navbar .fa-shopping-cart') ||
+      document.querySelector('[routerLink="/cart"]') ||
+      document.querySelector('.cart-icon');
+
+    if (cartIcon) {
+      cartIcon.classList.add('cart-icon-bounce');
+      setTimeout(() => {
+        cartIcon.classList.remove('cart-icon-bounce');
+      }, 600);
+    }
+
+    // Animate cart badge if it exists
+    const cartBadge =
+      document.querySelector('.cart-badge') || document.querySelector('.badge');
+
+    if (cartBadge) {
+      cartBadge.classList.add('cart-badge-pulse');
+      setTimeout(() => {
+        cartBadge.classList.remove('cart-badge-pulse');
+      }, 600);
+    }
+  }
+
+  /**
+   * Show notification with enhanced animation
+   */
   showNotification(message: string) {
     const notification = document.createElement('div');
     notification.className = 'cart-notification';
-    notification.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+    notification.innerHTML = `
+      <i class="fas fa-check-circle me-2"></i>
+      ${message}
+    `;
     document.body.appendChild(notification);
 
-    setTimeout(() => notification.classList.add('show'), 10);
+    // Trigger show animation
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 10);
+
+    // Auto hide after 2.5 seconds
     setTimeout(() => {
       notification.classList.remove('show');
-      setTimeout(() => notification.remove(), 300);
-    }, 2000);
+      setTimeout(() => notification.remove(), 500);
+    }, 2500);
   }
 
+  /**
+   * Get star rating array for display
+   */
   getStarArray(rating: number): boolean[] {
     return Array.from({ length: 5 }, (_, i) => i < Math.floor(rating));
+  }
+
+  /**
+   * Track products by ID for better performance
+   */
+  trackByProductId(index: number, product: Product): number {
+    return product.id;
   }
 }

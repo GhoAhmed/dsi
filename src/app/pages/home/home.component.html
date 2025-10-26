@@ -11,7 +11,7 @@
                         Discover amazing products at unbeatable prices. Your one-stop shop for all your needs.
                     </p>
                     <div class="hero-buttons">
-                        <a routerLink="/products" class="btn btn-primary btn-lg me-3 btn-hero">
+                        <a routerLink="/products" class="btn btn-primary btn-lg me-3 btn-hero shop-now-btn">
                             <i class="fas fa-shopping-bag me-2"></i>
                             Shop Now
                         </a>
@@ -85,7 +85,7 @@
         </div>
 
         <div class="row g-4">
-            <div class="col-lg-3 col-md-6" *ngFor="let product of featuredProducts">
+            <div class="col-lg-3 col-md-6" *ngFor="let product of featuredProducts; trackBy: trackByProductId">
                 <div class="product-card">
                     <div class="product-image-wrapper">
                         <img [src]="product.image" [alt]="product.name" class="product-image">
@@ -113,7 +113,8 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="product-price">${{ product.price }}</div>
-                            <button class="btn btn-primary btn-sm btn-add-cart" (click)="addToCart(product)">
+                            <button class="btn btn-primary btn-sm btn-add-cart" (click)="addToCart(product, $event)"
+                                [attr.aria-label]="'Add ' + product.name + ' to cart'">
                                 <i class="fas fa-cart-plus me-1"></i>Add
                             </button>
                         </div>
@@ -148,7 +149,7 @@
 
         <!-- Products Grid -->
         <div class="row g-4">
-            <div class="col-lg-3 col-md-6" *ngFor="let product of getFilteredProducts()">
+            <div class="col-lg-3 col-md-6" *ngFor="let product of getFilteredProducts(); trackBy: trackByProductId">
                 <div class="product-card">
                     <div class="product-image-wrapper">
                         <img [src]="product.image" [alt]="product.name" class="product-image">
@@ -176,7 +177,8 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="product-price">${{ product.price }}</div>
-                            <button class="btn btn-primary btn-sm btn-add-cart" (click)="addToCart(product)">
+                            <button class="btn btn-primary btn-sm btn-add-cart" (click)="addToCart(product, $event)"
+                                [attr.aria-label]="'Add ' + product.name + ' to cart'">
                                 <i class="fas fa-cart-plus me-1"></i>Add
                             </button>
                         </div>
@@ -195,7 +197,7 @@
             <h2 class="mb-3">Get Special Offers & Discounts</h2>
             <p class="mb-4">Subscribe to our newsletter and never miss a deal!</p>
             <div class="newsletter-form">
-                <input type="email" class="form-control" placeholder="Enter your email">
+                <input type="email" class="form-control" placeholder="Enter your email" aria-label="Email address">
                 <button class="btn btn-primary">
                     <i class="fas fa-paper-plane me-2"></i>Subscribe
                 </button>

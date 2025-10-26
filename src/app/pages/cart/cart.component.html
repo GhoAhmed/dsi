@@ -14,7 +14,7 @@
             <i class="fas fa-shopping-cart empty-icon mb-4"></i>
             <h3 class="mb-3">Your cart is empty</h3>
             <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
-            <a routerLink="/home" class="btn btn-primary btn-lg">
+            <a routerLink="/home" class="btn btn-primary btn-lg btn-start-shopping">
                 <i class="fas fa-shopping-bag me-2"></i>
                 Start Shopping
             </a>
@@ -31,14 +31,15 @@
                             <i class="fas fa-list me-2"></i>
                             Cart Items ({{ cartItems.length }})
                         </h5>
-                        <button class="btn btn-outline-danger btn-sm" (click)="clearCart()">
+                        <button class="btn btn-outline-danger btn-sm btn-clear" (click)="clearCart()">
                             <i class="fas fa-trash me-2"></i>
                             Clear Cart
                         </button>
                     </div>
 
-                    <!-- Cart Items -->
-                    <div class="cart-item" *ngFor="let item of cartItems">
+                    <!-- Cart Items with Animation Data Attributes -->
+                    <div class="cart-item" *ngFor="let item of cartItems; trackBy: trackByItemId"
+                        [attr.data-item-id]="item.id">
                         <div class="row g-3 align-items-center">
                             <!-- Product Image -->
                             <div class="col-md-3">
@@ -54,7 +55,7 @@
                                     <h5 class="item-name">{{ item.name }}</h5>
                                     <p class="item-description">{{ item.description }}</p>
                                     <div class="item-price-mobile d-md-none">
-                                        <span class="price">${{ item.price }}</span>
+                                        <span class="price">${{ item.price.toFixed(2) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -62,11 +63,15 @@
                             <!-- Quantity Controls -->
                             <div class="col-md-2">
                                 <div class="quantity-controls">
-                                    <button class="quantity-btn" (click)="decreaseQuantity(item.id)">
+                                    <button class="quantity-btn" (click)="decreaseQuantity(item.id)"
+                                        [attr.aria-label]="'Decrease quantity of ' + item.name">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <span class="quantity-value">{{ item.quantity }}</span>
-                                    <button class="quantity-btn" (click)="increaseQuantity(item.id)">
+                                    <span class="quantity-value" [attr.data-quantity-id]="item.id">
+                                        {{ item.quantity }}
+                                    </span>
+                                    <button class="quantity-btn" (click)="increaseQuantity(item.id)"
+                                        [attr.aria-label]="'Increase quantity of ' + item.name">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -75,10 +80,11 @@
                             <!-- Price & Remove -->
                             <div class="col-md-2">
                                 <div class="item-actions text-end">
-                                    <div class="item-total mb-2">
+                                    <div class="item-total mb-2" [attr.data-price-id]="item.id">
                                         ${{ getItemTotal(item).toFixed(2) }}
                                     </div>
-                                    <button class="btn btn-remove btn-sm" (click)="removeItem(item.id)">
+                                    <button class="btn btn-remove btn-sm" (click)="removeItem(item.id)"
+                                        [attr.aria-label]="'Remove ' + item.name + ' from cart'">
                                         <i class="fas fa-trash-alt me-1"></i>
                                         Remove
                                     </button>
@@ -119,8 +125,8 @@
 
                     <div class="promo-code mt-4 mb-4">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Promo code">
-                            <button class="btn btn-outline-primary">
+                            <input type="text" class="form-control" placeholder="Promo code" aria-label="Promo code">
+                            <button class="btn btn-outline-primary btn-apply">
                                 Apply
                             </button>
                         </div>
@@ -131,7 +137,7 @@
                         Proceed to Checkout
                     </button>
 
-                    <a routerLink="/home" class="btn btn-outline-primary w-100">
+                    <a routerLink="/home" class="btn btn-outline-primary btn-continue w-100">
                         <i class="fas fa-arrow-left me-2"></i>
                         Continue Shopping
                     </a>

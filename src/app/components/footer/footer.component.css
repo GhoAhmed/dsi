@@ -145,6 +145,12 @@
 }
 
 @media (max-width: 767px) {
+    .footer-contact-column {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
     .footer-custom {
         text-align: center;
     }

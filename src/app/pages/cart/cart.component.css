@@ -1,14 +1,39 @@
-/* cart.component.css */
-
 .cart-page {
     min-height: calc(100vh - 200px);
     background: #f8f9fa;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Page Header */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   PAGE HEADER ANIMATIONS
+   ============================================ */
+
 .page-header {
     text-align: center;
     padding: 2rem 0;
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .page-title {
@@ -25,25 +50,77 @@
     font-size: 1.1rem;
 }
 
-/* Empty Cart */
+/* ============================================
+   EMPTY CART ANIMATIONS
+   ============================================ */
+
 .empty-cart {
     background: white;
     border-radius: 20px;
     padding: 5rem 2rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    animation: scaleIn 0.6s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .empty-icon {
     font-size: 5rem;
     color: #cbd5e0;
+    animation: bounce 2s infinite ease-in-out;
 }
 
-/* Cart Items Container */
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-20px);
+    }
+
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ============================================
+   CART ITEMS CONTAINER
+   ============================================ */
+
 .cart-items-container {
     background: white;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    animation: slideInFromRight 0.6s ease-out;
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .cart-header {
@@ -51,7 +128,10 @@
     border-bottom: 2px solid #f1f5f9;
 }
 
-/* Cart Item */
+/* ============================================
+   CART ITEM ANIMATIONS (Add to Cart)
+   ============================================ */
+
 .cart-item {
     background: #f8fafc;
     border-radius: 15px;
@@ -59,12 +139,99 @@
     margin-bottom: 1rem;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    animation: slideInItem 0.5s ease-out;
+    transform-origin: center;
+}
+
+/* Main animation when item is added to cart */
+@keyframes slideInItem {
+    0% {
+        opacity: 0;
+        transform: translateX(100px) scale(0.8);
+    }
+
+    60% {
+        transform: translateX(-10px) scale(1.02);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Pulse effect when item is freshly added */
+.cart-item.item-added {
+    animation: slideInItem 0.5s ease-out, pulseGlow 0.8s ease-out 0.5s;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+        border-color: rgba(102, 126, 234, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 0 20px rgba(102, 126, 234, 0);
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+        border-color: transparent;
+    }
 }
 
 .cart-item:hover {
     border-color: #667eea;
     box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
 }
+
+/* Shake animation for quantity changes */
+.cart-item.quantity-changed {
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0) translateY(0);
+    }
+
+    25% {
+        transform: translateX(-8px) translateY(0);
+    }
+
+    50% {
+        transform: translateX(8px) translateY(0);
+    }
+
+    75% {
+        transform: translateX(-8px) translateY(0);
+    }
+}
+
+/* Fade out animation for item removal */
+.cart-item.item-removing {
+    animation: fadeOutSlide 0.4s ease-out forwards;
+}
+
+@keyframes fadeOutSlide {
+    to {
+        opacity: 0;
+        transform: translateX(-100px);
+        height: 0;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* ============================================
+   IMAGE ANIMATIONS
+   ============================================ */
 
 .item-image-wrapper {
     border-radius: 12px;
@@ -82,7 +249,16 @@
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
+    transition: transform 0.4s ease;
 }
+
+.cart-item:hover .item-image {
+    transform: scale(1.1) rotate(2deg);
+}
+
+/* ============================================
+   ITEM DETAILS
+   ============================================ */
 
 .item-details {
     padding: 0.5rem 0;
@@ -96,6 +272,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 0.5rem;
+    animation: fadeIn 0.6s ease-out 0.2s backwards;
 }
 
 .item-name {
@@ -103,12 +280,14 @@
     font-weight: 700;
     color: #2d3748;
     margin-bottom: 0.5rem;
+    animation: fadeIn 0.6s ease-out 0.3s backwards;
 }
 
 .item-description {
     font-size: 0.9rem;
     color: #718096;
     margin-bottom: 0.5rem;
+    animation: fadeIn 0.6s ease-out 0.4s backwards;
 }
 
 .item-price-mobile {
@@ -124,7 +303,10 @@
     background-clip: text;
 }
 
-/* Quantity Controls */
+/* ============================================
+   QUANTITY CONTROLS ANIMATIONS
+   ============================================ */
+
 .quantity-controls {
     display: flex;
     align-items: center;
@@ -134,6 +316,7 @@
     border-radius: 30px;
     padding: 0.5rem;
     border: 2px solid #e2e8f0;
+    animation: fadeIn 0.6s ease-out 0.5s backwards;
 }
 
 .quantity-btn {
@@ -152,8 +335,12 @@
 }
 
 .quantity-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.15) rotate(90deg);
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.quantity-btn:active {
+    transform: scale(0.9) rotate(90deg);
 }
 
 .quantity-value {
@@ -162,9 +349,32 @@
     min-width: 30px;
     text-align: center;
     color: #2d3748;
+    transition: all 0.3s ease;
 }
 
-/* Item Actions */
+/* Quantity change animation */
+.quantity-value.value-changed {
+    animation: popNumber 0.4s ease-out;
+}
+
+@keyframes popNumber {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.5);
+        color: #667eea;
+        font-weight: 900;
+    }
+}
+
+/* ============================================
+   ITEM ACTIONS
+   ============================================ */
+
 .item-actions {
     display: flex;
     flex-direction: column;
@@ -179,6 +389,25 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: fadeIn 0.6s ease-out 0.6s backwards;
+    transition: all 0.3s ease;
+}
+
+.item-total.price-changed {
+    animation: priceUpdate 0.5s ease-out;
+}
+
+@keyframes priceUpdate {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
+    }
 }
 
 .btn-remove {
@@ -186,18 +415,38 @@
     border: 2px solid #ef4444;
     color: #ef4444;
     border-radius: 20px;
-    padding: 0.4rem 1rem;
+    padding: 0.4rem 0.8rem;
     font-weight: 600;
     transition: all 0.3s ease;
+    animation: fadeIn 0.6s ease-out 0.7s backwards;
 }
 
 .btn-remove:hover {
     background: #ef4444;
     color: white;
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
 }
 
-/* Order Summary */
+.btn-remove:active {
+    transform: scale(0.95) rotate(-5deg);
+}
+
+.btn-clear {
+    padding: 0.4rem 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* ============================================
+   ORDER SUMMARY ANIMATIONS
+   ============================================ */
+
 .order-summary {
     background: white;
     border-radius: 20px;
@@ -205,6 +454,19 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 100px;
+    animation: slideInFromLeft 0.6s ease-out;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .summary-title {
@@ -225,6 +487,14 @@
     margin-bottom: 1rem;
     color: #4a5568;
     font-size: 0.95rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.summary-row:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
 }
 
 .summary-total {
@@ -240,17 +510,45 @@
     background-clip: text;
 }
 
-/* Promo Code */
+/* Animate total when it changes */
+.summary-total.total-updated {
+    animation: totalPulse 0.6s ease-out;
+}
+
+@keyframes totalPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.6));
+    }
+}
+
+/* ============================================
+   PROMO CODE
+   ============================================ */
+
 .promo-code .input-group {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     border-radius: 10px;
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.promo-code .input-group:focus-within {
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
 }
 
 .promo-code .form-control {
     border: 2px solid #e2e8f0;
     border-right: none;
     padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
 }
 
 .promo-code .form-control:focus {
@@ -265,7 +563,28 @@
     font-weight: 600;
 }
 
-/* Checkout Button */
+.btn-apply {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-apply:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-apply:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   CHECKOUT BUTTONS
+   ============================================ */
+
 .btn-checkout {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
@@ -275,6 +594,26 @@
     font-weight: 700;
     transition: all 0.3s ease;
     box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-checkout::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-checkout:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-checkout:hover {
@@ -282,7 +621,44 @@
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
-/* Payment Icons */
+.btn-checkout:active {
+    transform: translateY(-1px);
+}
+
+.btn-continue {
+    border-radius: 12px;
+    padding: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: #667eea;
+}
+
+.btn-continue:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.btn-start-shopping {
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background-color: #667eea;
+    border: none;
+}
+
+.btn-start-shopping:hover {
+    background: #764ba2;
+    box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   PAYMENT ICONS
+   ============================================ */
+
 .payment-icons {
     padding-top: 1rem;
     border-top: 1px solid #e2e8f0;
@@ -296,10 +672,13 @@
 
 .payment-icon:hover {
     color: #667eea;
-    transform: scale(1.1);
+    transform: scale(1.2) rotate(5deg);
 }
 
-/* Cart Notification */
+/* ============================================
+   CART NOTIFICATION (Toast)
+   ============================================ */
+
 .cart-notification {
     position: fixed;
     top: 100px;
@@ -312,18 +691,72 @@
     z-index: 9999;
     display: flex;
     align-items: center;
+    gap: 10px;
     font-weight: 600;
     opacity: 0;
     transform: translateX(400px);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .cart-notification.show {
     opacity: 1;
     transform: translateX(0);
+    animation: slideInBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Responsive */
+@keyframes slideInBounce {
+    0% {
+        transform: translateX(400px);
+    }
+
+    60% {
+        transform: translateX(-20px);
+    }
+
+    80% {
+        transform: translateX(10px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.cart-notification.hide {
+    animation: slideOutFade 0.4s ease-out forwards;
+}
+
+@keyframes slideOutFade {
+    to {
+        opacity: 0;
+        transform: translateX(400px);
+    }
+}
+
+/* ============================================
+   LOADING SPINNER
+   ============================================ */
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
 @media (max-width: 991px) {
     .order-summary {
         position: relative;
@@ -375,5 +808,20 @@
     .cart-items-container,
     .order-summary {
         padding: 1.5rem;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
